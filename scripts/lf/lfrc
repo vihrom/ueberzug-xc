@@ -1,0 +1,8 @@
+%[ -e /tmp/lf-ueberzug-pipe ] || mkfifo /tmp/lf-ueberzug-pipe
+
+%tail -f /tmp/lf-ueberzug-pipe | ueberzug-xc &
+
+cmd on-quit %[ rm -f /tmp/lf-ueberzug-pipe ]
+
+set previewer ~/.config/lf/preview
+set cleaner ~/.config/lf/cleaner

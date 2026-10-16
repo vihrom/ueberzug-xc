@@ -1,0 +1,10 @@
+*.o
+.cache
+assets
+build/
+compile_commands.json
+massif.error.out
+massif.normal.out
+tags
+tests/
+ueberzug-xc

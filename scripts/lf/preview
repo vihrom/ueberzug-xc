@@ -1,0 +1,16 @@
+#!/bin/bash
+file="$1"
+width="$2"
+height="$3"
+x="$4"
+y="$5"
+
+mime=$(file --mime-type -Lb "$file")
+
+if [[ "$mime" == image/* ]]; then
+    printf '{"action": "add", "identifier": "lf-preview", "path": "%s", "x": %d, "y": %d, "width": %d, "height": %d}\n' \
+        "$file" "$x" "$y" "$width" "$height" > /tmp/lf-ueberzug-pipe
+    exit 1
+fi
+
+cat "$file"
