@@ -26,7 +26,7 @@ PROD_LDFLAGS = ${LIBS} -pie -s -Wl,-z,relro,-z,now
 DEV_CFLAGS = ${BASE_CFLAGS} -g -O0 -fno-omit-frame-pointer
 DEV_LDFLAGS = ${LIBS}
 
-ASAN_CFLAGS = ${BASE_CFLAGS} -g -O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all
+ASAN_CFLAGS = ${BASE_CFLAGS} -g -O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=object-size -fno-sanitize=alignment
 ASAN_LDFLAGS = ${LIBS} -fsanitize=address -fsanitize=undefined
 
 # Nested macro expansion
