@@ -117,6 +117,34 @@ render_and_cache_image(const char *path, const char *cache_path,
 	return saved;
 }
 
+/* Resolves $XDG_CACHE_HOME/ueberzug-xc (or ~/.cache/ueberzug-xc) and creates it. */
+static int
+get_cache_dir(char *out, size_t out_size)
+{
+	char base_buf[PATH_MAX];
+	const char *base = getenv("XDG_CACHE_HOME");
+
+	if (!base || base[0] != '/') {
+		const char *home = getenv("HOME");
+		if (!home || home[0] == '\0')
+			return 0;
+		if (snprintf(base_buf, sizeof(base_buf), "%s/.cache", home) >=
+		    (int)sizeof(base_buf))
+			return 0;
+		base = base_buf;
+	}
+
+	if (snprintf(out, out_size, "%s/ueberzug-xc", base) >= (int)out_size)
+		return 0;
+
+	if (mkdir(base, CACHE_DIR_PERMS) == -1 && errno != EEXIST)
+		return 0;
+	if (mkdir(out, CACHE_DIR_PERMS) == -1 && errno != EEXIST)
+		return 0;
+
+	return 1;
+}
+
 unsigned char *
 load_or_render_image(const char *path, long mtime, int target_width,
 		     int target_height, size_t *out_cap)
@@ -124,8 +152,8 @@ load_or_render_image(const char *path, long mtime, int target_width,
 	if (!path || target_width <= 0 || target_height <= 0)
 		return NULL;
 
-	const char *cache_dir = "/tmp/ueberzug_cache";
-	if (mkdir(cache_dir, CACHE_DIR_PERMS) == -1 && errno != EEXIST)
+	char cache_dir[PATH_MAX];
+	if (!get_cache_dir(cache_dir, sizeof(cache_dir)))
 		return NULL;
 
 	CacheMeta meta = { .mtime = mtime,
